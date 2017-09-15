@@ -1,4 +1,4 @@
-package org.zzy.plusOnelive.mvp.model.bean;
+package org.zzy.plusonelive.mvp.model.bean;
 
 /**
  * 项目名称: PlusOneLivePull

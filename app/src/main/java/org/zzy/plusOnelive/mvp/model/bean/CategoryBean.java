@@ -1,4 +1,4 @@
-package org.zzy.plusOnelive.mvp.model.bean;
+package org.zzy.plusonelive.mvp.model.bean;
 
 import java.util.List;
 

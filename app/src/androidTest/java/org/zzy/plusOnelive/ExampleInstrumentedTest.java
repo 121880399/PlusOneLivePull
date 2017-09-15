@@ -1,4 +1,4 @@
-package org.zzy.plusOnelive;
+package org.zzy.plusonelive;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

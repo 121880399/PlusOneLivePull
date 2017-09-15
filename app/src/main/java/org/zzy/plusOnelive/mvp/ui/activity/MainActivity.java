@@ -1,4 +1,4 @@
-package org.zzy.plusOnelive.mvp.ui.activity;
+package org.zzy.plusonelive.mvp.ui.activity;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -12,10 +12,10 @@ import android.widget.RelativeLayout;
 
 import com.zzy.quick.mvp.ui.BaseActivity;
 
-import org.zzy.plusOnelive.R;
-import org.zzy.plusOnelive.mvp.ui.fragment.CategoryFragment;
-import org.zzy.plusOnelive.mvp.ui.fragment.FindFragment;
-import org.zzy.plusOnelive.mvp.ui.fragment.RecommendFragmentd;
+import org.zzy.plusonelive.R;
+import org.zzy.plusonelive.mvp.ui.fragment.CategoryFragment;
+import org.zzy.plusonelive.mvp.ui.fragment.FindFragment;
+import org.zzy.plusonelive.mvp.ui.fragment.RecommendFragmentd;
 
 import butterknife.BindView;
 
@@ -43,10 +43,6 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
         return R.layout.activity_main;
     }
 
-    @Override
-    public void setBeforeLayout() {
-
-    }
 
     @Override
     public void initData() {

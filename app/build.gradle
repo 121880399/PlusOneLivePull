@@ -25,5 +25,7 @@ dependencies {
     compile rootProject.ext.dependencies["refreshLayout"]
     compile rootProject.ext.dependencies["refreshHeader"]
     compile rootProject.ext.dependencies["recycleView-adapter"]
+    compile rootProject.ext.dependencies["overscroll"]
+    compile rootProject.ext.dependencies["multitype"]
     compile project(':quick')
 }

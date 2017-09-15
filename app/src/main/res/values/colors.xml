@@ -16,4 +16,13 @@
     <color name="divider">#ffd2d2d2</color>
     <color name="province_line_border">#C7C7C7</color>
     <color name="black_overlay">#66000000</color>
+    <!--自定义控件-->
+    <color name="color_c6c6c6">#c6c6c6</color>
+    <color name="stroke_bg">#2b2b2b</color>
+
+    <!--朋友圈色值-->
+    <color name="nick">#517fae</color>
+    <color name="item_bottom_text">#8e8e8e</color>
+    <color name="item_showmore_click">#c6c6c6</color>
+    <color name="line_bg">#e5e5e5</color>
 </resources>

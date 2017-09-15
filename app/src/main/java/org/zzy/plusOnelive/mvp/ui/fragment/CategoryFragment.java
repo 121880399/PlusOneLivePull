@@ -1,20 +1,23 @@
-package org.zzy.plusOnelive.mvp.ui.fragment;
+package org.zzy.plusonelive.mvp.ui.fragment;
 
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zzy.quick.mvp.ui.BaseFragment;
+import com.zzy.quick.utils.log.LogFactory;
 
-import org.zzy.plusOnelive.R;
-import org.zzy.plusOnelive.mvp.model.bean.CategoryBean;
-import org.zzy.plusOnelive.mvp.model.bean.RecommendItemBean;
+import org.zzy.plusonelive.R;
+import org.zzy.plusonelive.adapter.RightAdapter;
+import org.zzy.plusonelive.mvp.model.bean.CategoryBean;
+import org.zzy.plusonelive.mvp.model.bean.RecommendItemBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +36,15 @@ public class CategoryFragment extends BaseFragment {
     @BindView(R.id.rv_right)
     RecyclerView rvRight;
 
-    private LinearLayoutManager mLinearLayoutManager;
+    private LinearLayoutManager mLeftLayoutManager;
+    private LinearLayoutManager mRightLayoutManager;
     private CommonAdapter<String> adapter;
     private List<CategoryBean> mAllDatas;
+    private RightAdapter rightAdapte;
+
+    private boolean move;
+    private int mIndex = 0;
+    private int oldSelectedPosition = 0;
 
     public static CategoryFragment newInstance() {
 
@@ -60,8 +69,8 @@ public class CategoryFragment extends BaseFragment {
     @Override
     public void initView(View view) {
         super.initView(view);
-        mLinearLayoutManager = new LinearLayoutManager(context);
-        rvLeft.setLayoutManager(mLinearLayoutManager);
+        mLeftLayoutManager = new LinearLayoutManager(context);
+        rvLeft.setLayoutManager(mLeftLayoutManager);
         DividerItemDecoration decoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
         rvLeft.addItemDecoration(decoration);
 
@@ -135,9 +144,9 @@ public class CategoryFragment extends BaseFragment {
         twoChild5.setNumberOfPeople("20万");
 
         RecommendItemBean twoChild6 = new RecommendItemBean();
-        twoChild5.setRoomName("今天穿裙子");
-        twoChild5.setUserName("阿忆大小姐");
-        twoChild5.setNumberOfPeople("20万");
+        twoChild6.setRoomName("今天穿裙子");
+        twoChild6.setUserName("阿忆大小姐");
+        twoChild6.setNumberOfPeople("20万");
 
         twoList.add(twoChild1);
         twoList.add(twoChild2);
@@ -264,13 +273,11 @@ public class CategoryFragment extends BaseFragment {
         };
 
         rvLeft.setAdapter(adapter);
-        rvRight.setLayoutManager(new GridLayoutManager(context,2));
+        rightAdapte=new RightAdapter(context,mAllDatas);
 
-        MyStickyRecyclerHeaderAdapter rightAdapte=new MyStickyRecyclerHeaderAdapter(context,mAllDatas);
+        mRightLayoutManager=new LinearLayoutManager(context);
+        rvRight.setLayoutManager(mRightLayoutManager);
         rvRight.setAdapter(rightAdapte);
-
-//        StickyRecyclerHeadersDecoration headersDecoration= new StickyRecyclerHeadersDecoration(rightAdapte);
-//        rvRight.addItemDecoration(headersDecoration);
     }
 
 
@@ -279,7 +286,8 @@ public class CategoryFragment extends BaseFragment {
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-
+                int titleIndex = rightAdapte.getPreSum(position)+position;
+                moveToPosition(titleIndex);
             }
 
             @Override
@@ -287,6 +295,80 @@ public class CategoryFragment extends BaseFragment {
                 return false;
             }
         });
+        RecyclerViewListener rl=new RecyclerViewListener();
+        rvRight.addOnScrollListener(rl);
+    }
+
+
+
+
+    private void moveToPosition(int n) {
+        mIndex=n;
+        //先从RecyclerView的LayoutManager中获取第一项和最后一项的Position
+        int firstItem = mRightLayoutManager.findFirstVisibleItemPosition();
+        int lastItem = mRightLayoutManager.findLastVisibleItemPosition();
+        //然后区分情况
+        if (n <= firstItem ){
+            //当要置顶的项在当前显示的第一个项的前面时
+            rvRight.smoothScrollToPosition(n);
+        }else if ( n <= lastItem ){
+            //当要置顶的项已经在屏幕上显示时
+            int top = rvRight.getChildAt(n - firstItem).getTop();
+            rvRight.scrollBy(0, top);
+        }else{
+            //当要置顶的项在当前显示的最后一项的后面时
+            rvRight.scrollToPosition(n);
+            //这里这个变量是用在RecyclerView滚动监听里面的
+            move = true;
+        }
+
+    }
+
+    private class RecyclerViewListener extends RecyclerView.OnScrollListener {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            if (move && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                move = false;
+                int n = mIndex - mRightLayoutManager.findFirstVisibleItemPosition();
+                Log.d("n---->", String.valueOf(n));
+                if (0 <= n && n < rvRight.getChildCount()) {
+                    int top = rvRight.getChildAt(n).getTop();
+                    Log.d("top--->", String.valueOf(top));
+                    rvRight.smoothScrollBy(0, top);
+                }
+            }
+            LogFactory.getLogUtil().d("onScrollStateChanged");
+            int firstVisibleItem = mRightLayoutManager.findFirstCompletelyVisibleItemPosition();
+            int sortType = rightAdapte.getSortType(firstVisibleItem);
+            rvLeft.scrollToPosition(sortType);
+            int firstVisibleItemPosition = mLeftLayoutManager.findFirstVisibleItemPosition();
+            View view=rvLeft.getChildAt(sortType-firstVisibleItemPosition);
+            View oldView=rvLeft.getChildAt(oldSelectedPosition);
+            TextView newTextViewold=(TextView)view.findViewById(R.id.tv_category);
+            TextView oldTextViewold=(TextView)oldView.findViewById(R.id.tv_category);
+            oldTextViewold.setSelected(false);
+            newTextViewold.setSelected(true);
+            oldSelectedPosition=sortType;
+
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            //在这里进行第二次滚动（最后的100米！）
+            if (move) {
+                move = false;
+                //获取要置顶的项在当前屏幕的位置，mIndex是记录的要置顶项在RecyclerView中的位置
+                int n = mIndex - mRightLayoutManager.findFirstVisibleItemPosition();
+                if (0 <= n && n < rvRight.getChildCount()) {
+                    int top = rvRight.getChildAt(n).getTop();
+                    rvRight.scrollBy(0, top);
+                }
+            }
+        }
+
+
     }
 
 

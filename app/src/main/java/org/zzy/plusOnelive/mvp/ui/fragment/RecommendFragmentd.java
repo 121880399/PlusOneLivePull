@@ -1,4 +1,4 @@
-package org.zzy.plusOnelive.mvp.ui.fragment;
+package org.zzy.plusonelive.mvp.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,8 +16,8 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zzy.quick.image.ImageFactory;
 import com.zzy.quick.mvp.ui.BaseFragment;
 
-import org.zzy.plusOnelive.R;
-import org.zzy.plusOnelive.mvp.model.bean.RecommendItemBean;
+import org.zzy.plusonelive.R;
+import org.zzy.plusonelive.mvp.model.bean.RecommendItemBean;
 
 import java.util.ArrayList;
 import java.util.List;

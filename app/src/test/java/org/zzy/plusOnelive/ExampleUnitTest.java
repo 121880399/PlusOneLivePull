@@ -1,4 +1,4 @@
-package org.zzy.plusOnelive;
+package org.zzy.plusonelive;
 
 import org.junit.Test;
 

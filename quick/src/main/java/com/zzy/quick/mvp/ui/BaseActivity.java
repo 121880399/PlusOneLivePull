@@ -2,9 +2,12 @@ package com.zzy.quick.mvp.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Toast;
 
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
@@ -30,6 +33,21 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
         private RxPermissions rxPermissions;
 
         protected ActionBarView topbarView;
+        //App是否退出
+        public static boolean isExit=false;
+
+        /**
+         * 双击退出的消息处理
+         */
+        public Handler mHandlerExit = new Handler() {
+
+                @Override
+                public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+                        isExit = false;
+                }
+        };
+
 
         @Override
         protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -130,6 +148,23 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
         }
 
 
+        /**
+         * 处理返回事件，如果在首页 连续按两次back键退出APP
+         */
+        public void dealAppBack() {
+                if (!isExit) {
+                        isExit = true;
+                        Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                                Toast.LENGTH_SHORT).show();
+                        // 利用handler延迟发送更改状态信息,间隔时间3秒钟，如果3秒内再次按back键，isExit就还为true就会退出APP
+                        mHandlerExit.sendEmptyMessageDelayed(
+                                0, 3000);
+                } else {
+                        finish();
+                        APPActivityManager.getInstance().finishActivities();
+                        System.exit(0);
+                }
+        }
 
 
         /**
@@ -145,7 +180,9 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
         /**
          * 在设置布局前进行操作
          * */
-        public abstract void setBeforeLayout();
+        public void setBeforeLayout(){
+                APPActivityManager.getInstance().addActivity(this);
+        }
         /**
          * 初始化View
          * */

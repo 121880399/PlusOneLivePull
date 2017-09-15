@@ -3,20 +3,22 @@
     android:id="@+id/linear_layout"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="@android:color/white"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    >
 
 
     <TextView
         android:id="@+id/tv_category"
         android:paddingLeft="3dp"
         android:paddingRight="3dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="6dp"
         android:gravity="center"
         android:text=""
+        android:background="@drawable/selector_category_item"
         android:textColor="@color/colorTextBlack"
         android:textSize="14sp"/>
 
